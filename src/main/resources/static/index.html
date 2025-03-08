@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Member & Post Board</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Global Styles */
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        /* Navbar */
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .navbar-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            cursor: pointer;
+        }
+        .navbar button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .navbar button:hover { background: #0056b3; }
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        /* Member List Card */
+        .member-list {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .member-list h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #007bff;
+        }
+        .member-list input,
+        .member-list button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .member-list button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .member-list button:hover { background: #0056b3; }
+        .member-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .member-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .member-pages {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .member-pages button {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .member-pages button:hover { background: #5a6268; }
+        .member-pages span {
+            font-size: 14px;
+            padding: 0 20px;
+        }
+        /* 벌크성 수정 (나이 증가) 영역 */
+        .bulk-age-update {
+            margin-bottom: 15px;
+        }
+        .bulk-age-update input {
+            width: calc(100% - 110px);
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .bulk-age-update button {
+            width: 90px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .bulk-age-update button:hover { background: #218838; }
+        /* Post List */
+        .post-list {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .post-list h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #28a745;
+        }
+        /* Post Search Form */
+        .post-search-form {
+            margin-bottom: 15px;
+        }
+        .post-search-form input {
+            width: calc(33.33% - 10px);
+            padding: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .post-search-form button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .post-search-form button:hover { background: #0056b3; }
+        #postListContainer > div {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #postListContainer > div:hover { background: #f8f9fa; }
+        /* Post Pagination */
+        .post-pages {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .post-pages button {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background 0.3s ease;
+        }
+        .post-pages button:hover { background: #5a6268; }
+        .post-pages span {
+            font-size: 14px;
+            padding: 0 10px;
+        }
+        /* Bottom-right Post Creation Button */
+        .bottom-right-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        .bottom-right-btn:hover { background: #218838; }
+        /* Member Registration Modal */
+        #memberOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        #memberFormContainer {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #memberFormContainer h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #333;
+        }
+        #memberFormContainer input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #memberFormContainer button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #memberFormContainer button:hover { background: #0056b3; }
+        /* Post Creation Section */
+        #postFormSection {
+            display: none;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 50px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #postFormSection h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        #postFormSection input,
+        #postFormSection textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #postFormSection button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #postFormSection button:hover { background: #218838; }
+        /* Post Detail Section */
+        #postDetailSection {
+            display: none;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 50px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #postDetailSection h2 {
+            font-size: 26px;
+            color: #333;
+            margin-top: 0;
+        }
+        /* 작성자 및 작성 시간 영역 */
+        #detailAuthor {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+        #detailCreatedDate {
+            font-size: 14px;
+            color: #555;
+            margin: 5px 0 15px 0;
+        }
+        /* 본문 내용 영역 스타일 (수정됨) */
+        #detailContent {
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        #postDetailSection button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.3s ease;
+        }
+        #postDetailSection button:hover { background: #0056b3; }
+        /* Comment Styling */
+        .comment {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .comment strong { color: #007bff; }
+        .comment button {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-right: 5px;
+            transition: background 0.3s ease;
+        }
+        .comment button:hover { background: #5a6268; }
+        .comment-form h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .comment-form button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .comment-form button:hover { background: #0056b3; }
+        /* Post Edit Section */
+        #postEditSection {
+            display: none;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 50px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #postEditSection h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        #postEditSection input,
+        #postEditSection textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #postEditSection button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #postEditSection button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+<!-- Navbar with title -->
+<div class="navbar">
+    <div class="navbar-title">디씨안싸이드 코리아</div>
+    <button id="btnOpenMemberOverlay">회원 등록</button>
+</div>
+
+<!-- Main container -->
+<div class="container">
+    <div class="grid">
+        <!-- Member List -->
+        <div class="member-list">
+            <h2>회원 목록</h2>
+            <!-- 검색 폼 -->
+            <div>
+                <input type="text" id="searchUsername" placeholder="이름 검색">
+                <input type="number" id="searchAge" placeholder="나이 검색">
+                <button id="btnSearchMember">검색</button>
+            </div>
+            <!-- 벌크성 수정 (나이 증가) 폼 -->
+            <div class="bulk-age-update">
+                <input type="number" id="bulkAgeInput" placeholder="나이 입력">
+                <button id="btnAddAge">나이 증가</button>
+            </div>
+            <ul id="memberList"></ul>
+            <div class="member-pages">
+                <button id="btnPrevPage">이전</button>
+                <span id="pageIndicator">Page : 0</span>
+                <button id="btnNextPage">다음</button>
+            </div>
+        </div>
+        <!-- Post List -->
+        <div class="post-list">
+            <h2>전체 게시글</h2>
+            <!-- 게시글 검색 폼 (검색 조건 반영) -->
+            <div class="post-search-form">
+                <input type="text" id="postTitleSearch" placeholder="제목 검색">
+                <input type="text" id="postAuthorSearch" placeholder="작성자 검색">
+                <input type="text" id="postContentSearch" placeholder="본문 검색">
+                <button id="btnSearchPost">검색</button>
+            </div>
+            <div id="postListContainer">
+                <!-- 게시글 목록이 표시됨 -->
+            </div>
+            <!-- 게시글 페이징 영역 -->
+            <div class="post-pages">
+                <button id="btnPrevPost">이전</button>
+                <span id="postPageIndicator">Page : 0</span>
+                <button id="btnNextPost">다음</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom-right Post Creation Button -->
+<button class="bottom-right-btn" id="btnOpenPostForm">게시글 작성하기</button>
+
+<!-- Member Registration Modal -->
+<div id="memberOverlay">
+    <div id="memberFormContainer">
+        <h2>회원 등록</h2>
+        <form id="memberForm">
+            <label for="username">이름:</label><br>
+            <input type="text" id="username" required><br><br>
+            <label for="age">나이:</label><br>
+            <input type="number" id="age" required><br><br>
+            <button type="submit">등록하기</button>
+            <button type="button" id="btnCloseMemberOverlay" style="margin-left:10px;">닫기</button>
+        </form>
+    </div>
+</div>
+
+<!-- Post Creation Section -->
+<div id="postFormSection">
+    <h2>게시글 작성</h2>
+    <form id="postForm">
+        <label>제목:</label><br>
+        <input type="text" id="postTitle" required><br><br>
+        <label>작성자 (username):</label><br>
+        <input type="text" id="postWriter" required><br><br>
+        <label>본문:</label><br>
+        <textarea id="postContent" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">작성하기</button>
+        <button type="button" id="btnCancelPost">취소</button>
+    </form>
+</div>
+
+<!-- Post Detail Section -->
+<div id="postDetailSection">
+    <h2 id="detailTitle">제목 : </h2>
+    <!-- 작성자 및 작성 시간 영역 -->
+    <p id="detailAuthor"></p>
+    <p id="detailCreatedDate"></p>
+    <!-- 본문 내용 영역 (수정됨) -->
+    <p id="detailContent"></p>
+    <button id="btnEditPost">게시글 수정</button>
+    <button id="btnDeletePost">게시글 삭제</button>
+    <!-- Comments Area -->
+    <div>
+        <h3>댓글</h3>
+        <div id="commentList"></div>
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-form">
+            <h4>댓글 작성</h4>
+            <label for="commentMemberId">Member ID:</label><br>
+            <input type="number" id="commentMemberId" required><br><br>
+            <label for="commentContent">내용:</label><br>
+            <textarea id="commentContent" rows="2" cols="40" required></textarea><br><br>
+            <button id="btnAddComment">댓글 추가</button>
+        </div>
+    </div>
+    <br>
+    <button id="btnBackToHome">홈으로</button>
+</div>
+
+<!-- Post Edit Section -->
+<div id="postEditSection">
+    <h2>게시글 수정</h2>
+    <form id="postEditForm">
+        <label>제목:</label><br>
+        <input type="text" id="editPostTitle" readonly><br><br>
+        <label>작성자:</label><br>
+        <input type="text" id="editPostWriter" readonly><br><br>
+        <label>본문:</label><br>
+        <textarea id="editPostContent" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">수정완료</button>
+        <button type="button" id="btnCancelEdit">취소</button>
+    </form>
+</div>
+
+<script>
+    const baseUrl = 'http://localhost:8080';
+    let currentPage = 0;
+    let currentPostPage = 0;
+    let globalSearchUsername = '';
+    let globalSearchAge = '';
+    let currentPostId = null;
+
+    // Member 관련 요소
+    const memberOverlay = document.getElementById('memberOverlay');
+    const btnOpenMemberOverlay = document.getElementById('btnOpenMemberOverlay');
+    const btnCloseMemberOverlay = document.getElementById('btnCloseMemberOverlay');
+    const memberForm = document.getElementById('memberForm');
+    const memberList = document.getElementById('memberList');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const btnPrevPage = document.getElementById('btnPrevPage');
+    const btnNextPage = document.getElementById('btnNextPage');
+    const btnAddAge = document.getElementById('btnAddAge');
+
+    // Post 관련 요소
+    const postListContainer = document.getElementById('postListContainer');
+    const postPageIndicator = document.getElementById('postPageIndicator');
+    const btnPrevPost = document.getElementById('btnPrevPost');
+    const btnNextPost = document.getElementById('btnNextPost');
+    const btnOpenPostForm = document.getElementById('btnOpenPostForm');
+    const btnCancelPost = document.getElementById('btnCancelPost');
+
+    // Post Detail 관련 요소
+    const postDetailSection = document.getElementById('postDetailSection');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailContent = document.getElementById('detailContent');
+    const detailAuthor = document.getElementById('detailAuthor');
+    const detailCreatedDate = document.getElementById('detailCreatedDate');
+    const commentList = document.getElementById('commentList');
+    const btnAddComment = document.getElementById('btnAddComment');
+    const btnBackToHome = document.getElementById('btnBackToHome');
+    const btnEditPost = document.getElementById('btnEditPost');
+    const btnDeletePost = document.getElementById('btnDeletePost');
+
+    // Post Edit Section
+    const postEditSection = document.getElementById('postEditSection');
+    const postEditForm = document.getElementById('postEditForm');
+
+    // Post Search 관련 요소
+    const postTitleSearch = document.getElementById('postTitleSearch');
+    const postAuthorSearch = document.getElementById('postAuthorSearch');
+    const postContentSearch = document.getElementById('postContentSearch');
+    const btnSearchPost = document.getElementById('btnSearchPost');
+
+    // 검색 폼 (Member)
+    const searchUsernameInput = document.getElementById('searchUsername');
+    const searchAgeInput = document.getElementById('searchAge');
+    const btnSearchMember = document.getElementById('btnSearchMember');
+
+    // 내비게이션 바 제목 클릭 시 홈으로
+    const navbarTitle = document.querySelector('.navbar-title');
+    navbarTitle.addEventListener('click', () => { showHomePage(); });
+
+    function showHomePage() {
+        document.querySelector('.container').style.display = 'block';
+        postFormSection.style.display = 'none';
+        postDetailSection.style.display = 'none';
+        postEditSection.style.display = 'none';
+    }
+    function showPostForm() {
+        document.querySelector('.container').style.display = 'none';
+        postFormSection.style.display = 'block';
+        postDetailSection.style.display = 'none';
+    }
+    function showPostDetail() {
+        document.querySelector('.container').style.display = 'none';
+        postFormSection.style.display = 'none';
+        postDetailSection.style.display = 'block';
+    }
+
+    // Member 이벤트
+    btnOpenMemberOverlay.addEventListener('click', () => { memberOverlay.style.display = 'flex'; });
+    btnCloseMemberOverlay.addEventListener('click', () => { memberOverlay.style.display = 'none'; });
+    btnSearchMember.addEventListener('click', () => {
+        globalSearchUsername = searchUsernameInput.value.trim();
+        globalSearchAge = searchAgeInput.value.trim();
+        fetchMembers(0);
+    });
+    memberForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const age = parseInt(document.getElementById('age').value);
+        const payload = { username, age };
+        try {
+            const res = await fetch(`${baseUrl}/members/new`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                memberOverlay.style.display = 'none';
+                memberForm.reset();
+                fetchMembers(0);
+            } else { alert('회원 등록 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    });
+    async function fetchMembers(page = 0) {
+        currentPage = page;
+        const size = 5;
+        let queryParams = `?page=${page}&size=${size}`;
+        if (globalSearchUsername) { queryParams += `&username=${encodeURIComponent(globalSearchUsername)}`; }
+        if (globalSearchAge) { queryParams += `&age=${encodeURIComponent(globalSearchAge)}`; }
+        try {
+            const response = await fetch(`${baseUrl}/members${queryParams}`);
+            const data = await response.json();
+            renderMembers(data.content);
+            pageIndicator.textContent = `Page : ${data.pageable.pageNumber}`;
+        } catch (error) { memberList.innerHTML = `<li>회원 목록 조회 실패: ${error}</li>`; }
+    }
+    function renderMembers(members) {
+        memberList.innerHTML = '';
+        members.forEach(member => {
+            const li = document.createElement('li');
+            li.textContent = `회원명: ${member.username}, 나이: ${member.age}`;
+            memberList.appendChild(li);
+        });
+    }
+    btnPrevPage.addEventListener('click', () => { if (currentPage > 0) fetchMembers(currentPage - 1); });
+    btnNextPage.addEventListener('click', () => { fetchMembers(currentPage + 1); });
+    btnAddAge.addEventListener('click', async () => {
+        const ageInput = document.getElementById('bulkAgeInput').value;
+        if (!ageInput) { alert('나이 값을 입력하세요.'); return; }
+        try {
+            const response = await fetch(`${baseUrl}/members/addAge?age=${encodeURIComponent(ageInput)}`, { method: 'POST' });
+            if (response.ok) { alert('나이가 증가되었습니다.'); fetchMembers(currentPage); }
+            else { alert('나이 증가 실패'); }
+        } catch (error) { alert('오류 발생: ' + error); }
+    });
+
+    // Post 이벤트 및 함수
+    btnSearchPost.addEventListener('click', () => { fetchPosts(0); });
+    async function fetchPosts(page = 0) {
+        currentPostPage = page;
+        const size = 10;
+        const title = postTitleSearch.value.trim();
+        const author = postAuthorSearch.value.trim();
+        const content = postContentSearch.value.trim();
+        let queryParams = `?page=${page}&size=${size}`;
+        if (title) { queryParams += `&title=${encodeURIComponent(title)}`; }
+        if (author) { queryParams += `&author=${encodeURIComponent(author)}`; }
+        if (content) { queryParams += `&content=${encodeURIComponent(content)}`; }
+        try {
+            const response = await fetch(`${baseUrl}/posts${queryParams}`);
+            const data = await response.json();
+            renderPosts(data.content || []);
+            postPageIndicator.textContent = `Page : ${data.pageable.pageNumber}`;
+        } catch (error) { postListContainer.textContent = `게시글 조회 실패: ${error}`; }
+    }
+    function renderPosts(posts) {
+        postListContainer.innerHTML = '';
+        if (!posts || posts.length === 0) {
+            postListContainer.textContent = '게시글을 작성해주세요';
+            return;
+        }
+        posts.forEach(post => {
+            const div = document.createElement('div');
+            div.style.cursor = 'pointer';
+            div.textContent = `제목: ${post.title}, 작성자: ${post.name}`;
+            div.addEventListener('click', () => { showPostDetailPage(post.id); });
+            postListContainer.appendChild(div);
+        });
+    }
+    btnPrevPost.addEventListener('click', () => { if (currentPostPage > 0) fetchPosts(currentPostPage - 1); });
+    btnNextPost.addEventListener('click', () => { fetchPosts(currentPostPage + 1); });
+    btnOpenPostForm.addEventListener('click', () => { showPostForm(); });
+    btnCancelPost.addEventListener('click', () => { showHomePage(); });
+    postForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const title = document.getElementById('postTitle').value;
+        const name = document.getElementById('postWriter').value;
+        const content = document.getElementById('postContent').value;
+        const payload = { title, name, content };
+        try {
+            const response = await fetch(`${baseUrl}/posts/new`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) { showHomePage(); await fetchPosts(0); }
+            else { alert('게시글 작성 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    });
+    async function showPostDetailPage(postId) {
+        currentPostId = postId;
+        try {
+            const response = await fetch(`${baseUrl}/posts/${postId}`);
+            const postData = await response.json();
+            detailTitle.textContent = postData.title;
+            detailAuthor.textContent = "작성자: " + postData.name;
+            detailCreatedDate.textContent = "작성시간: " + postData.createdDate;
+            detailContent.textContent = postData.content;
+            commentList.innerHTML = '';
+            if (!postData.comments || postData.comments.length === 0) {
+                const noCommentDiv = document.createElement('div');
+                noCommentDiv.textContent = '댓글이 없습니다.';
+                commentList.appendChild(noCommentDiv);
+            } else { renderNestedComments(commentList, postData.comments, 0); }
+            showPostDetail();
+        } catch (error) { alert('해당 게시글을 불러오는 중 오류 발생: ' + error); }
+    }
+    function renderNestedComments(container, comments, level) {
+        if (!comments || !Array.isArray(comments) || comments.length === 0) return;
+        comments.forEach(comment => {
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.style.marginLeft = `${level * 20}px`;
+            div.innerHTML = `
+          <strong>${comment.username}</strong><br>
+          <span>${comment.content}</span>
+        `;
+            // Reply button
+            const replyButton = document.createElement('button');
+            replyButton.textContent = '답글 달기';
+            replyButton.style.marginTop = '5px';
+            replyButton.addEventListener('click', () => {
+                const memberId = prompt('Member ID:');
+                const replyContent = prompt('답글 내용:');
+                if (memberId && replyContent) { createReply(comment, parseInt(memberId), replyContent); }
+            });
+            div.appendChild(document.createElement('br'));
+            div.appendChild(replyButton);
+            // Edit button
+            const editButton = document.createElement('button');
+            editButton.textContent = '수정';
+            editButton.style.marginTop = '5px';
+            editButton.addEventListener('click', () => {
+                const newContent = prompt('새로운 댓글 내용을 입력하세요:', comment.content);
+                if (newContent && newContent.trim() !== '') { updateComment(comment.id, newContent); }
+            });
+            div.appendChild(editButton);
+            // Delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '삭제';
+            deleteButton.style.marginTop = '5px';
+            deleteButton.addEventListener('click', () => {
+                if (confirm('정말 삭제하시겠습니까?')) { deleteComment(comment.id); }
+            });
+            div.appendChild(deleteButton);
+            container.appendChild(div);
+            if (comment.comments && comment.comments.length > 0) { renderNestedComments(container, comment.comments, level + 1); }
+        });
+    }
+    async function updateComment(commentId, newContent) {
+        try {
+            const response = await fetch(`${baseUrl}/comments/${commentId}/edit`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: newContent })
+            });
+            if (response.ok) { await showPostDetailPage(currentPostId); }
+            else { alert('댓글 수정 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    }
+    async function deleteComment(commentId) {
+        try {
+            const response = await fetch(`${baseUrl}/posts/${currentPostId}/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (response.ok) { await showPostDetailPage(currentPostId); }
+            else { alert('댓글 삭제 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    }
+    btnAddComment.addEventListener('click', async () => {
+        const memberId = document.getElementById('commentMemberId').value;
+        const content = document.getElementById('commentContent').value;
+        if (!currentPostId || !memberId || !content) { alert('모든 필드를 입력해주세요.'); return; }
+        const payload = { postId: currentPostId, memberId: parseInt(memberId), content };
+        try {
+            const res = await fetch(`${baseUrl}/comments/new`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                await showPostDetailPage(currentPostId);
+                document.getElementById('commentMemberId').value = '';
+                document.getElementById('commentContent').value = '';
+            } else { alert('댓글 작성 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    });
+    async function createReply(parentComment, memberId, content) {
+        const payload = { memberId, content };
+        try {
+            const response = await fetch(`${baseUrl}/${parentComment.id}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) { await showPostDetailPage(currentPostId); }
+            else { alert('대댓글 작성 실패'); }
+        } catch (err) { alert('오류 발생: ' + err); }
+    }
+    btnBackToHome.addEventListener('click', () => { showHomePage(); });
+    btnEditPost.addEventListener('click', () => {
+        document.getElementById('editPostTitle').value = detailTitle.textContent;
+        document.getElementById('editPostContent').value = detailContent.textContent;
+        postDetailSection.style.display = 'none';
+        postEditSection.style.display = 'block';
+    });
+    btnCancelEdit.addEventListener('click', () => {
+        postEditSection.style.display = 'none';
+        postDetailSection.style.display = 'block';
+    });
+    postEditForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const content = document.getElementById('editPostContent').value;
+        try {
+            const response = await fetch(`${baseUrl}/posts/${currentPostId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
+            });
+            if (response.ok) {
+                const updatedPost = await response.json();
+                detailContent.textContent = updatedPost.content;
+                postEditSection.style.display = 'none';
+                postDetailSection.style.display = 'block';
+                await showPostDetailPage(currentPostId);
+            } else { alert('게시글 수정 실패'); }
+        } catch (error) { alert('오류 발생: ' + error); }
+    });
+    btnDeletePost.addEventListener('click', async () => {
+        const confirmDelete = confirm('정말로 이 게시글을 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                const response = await fetch(`${baseUrl}/posts/${currentPostId}`, { method: 'POST' });
+                if (response.ok) {
+                    alert('게시글이 삭제되었습니다.');
+                    showHomePage();
+                    await fetchPosts(0);
+                } else { alert('게시글 삭제 실패'); }
+            } catch (error) { alert('오류 발생: ' + error); }
+        }
+    });
+    window.addEventListener('DOMContentLoaded', () => {
+        showHomePage();
+        fetchMembers(0);
+        fetchPosts(0);
+    });
+</script>
+</body>
+</html>
