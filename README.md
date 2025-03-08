@@ -8,8 +8,6 @@
 ![제목 없는 다이어그램 drawio](https://github.com/user-attachments/assets/b69c54ae-a2aa-49f7-b852-3cb4387366b6)
 
 
-
-
 사용한 기술 스택
 Spring boot , Jpa, Spring Data Jpa, QueryDSL, H2 database
 
