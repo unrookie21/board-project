@@ -21,6 +21,8 @@ import static study.data_jpa.entity.QPost.*;
 
 public class PostRepositoryImpl implements PostRepositoryCustom{
 
+    // 커밋 테스트
+
     // EntityManger 랑 JpaQueryFactory 필요
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
